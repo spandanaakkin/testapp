@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name : my-alb
+  namespace: dev
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/load-balancer-name : my-load-balancer
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/subnets: subnet-016a47b214904fb2d, subnet-0f506c8bd15ae8999, subnet-0784bde57e4966dc4, subnet-05c702727c3e8ebf5, subnet-0e84278fcf35b2b49
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: python-ser
+            port:
+              number: 80
+

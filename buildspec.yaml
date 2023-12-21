@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+  
+      - yum install -y jq
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 909216379109.dkr.ecr.us-east-1.amazonaws.com
+     # - aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 240077723373.dkr.ecr.us-west-1.amazonaws.com
+      - REPOSITORY_URI=909216379109.dkr.ecr.us-east-1.amazonaws.com/privaterepository-1
+                       
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t privaterepository-1 .
+      - docker tag privaterepository-1:latest 909216379109.dkr.ecr.us-east-1.amazonaws.com/privaterepository-1:latest
+  post_build:
+    commands:
+      - echo Pushing the Docker images...
+      - docker push 909216379109.dkr.ecr.us-east-1.amazonaws.com/privaterepository-1:latest
+      #- AWS_ACCESS_KEY_ID=AKIA5HMME6DST4X7GN4R
+      #- AWS_SECRET_ACCESS_KEY=ymkh69ShHZ+0oo/nvxSstYI1KdOGZGjHyYkF8w9l
+      #- aws sts get-caller-identity
+      #- aws eks update-kubeconfig --name sample-eks-cluster --region us-east-1
+      #- kubectl apply -f deployment.yml 
+      #- kubectl apply -f ingress.yml
+
+      
